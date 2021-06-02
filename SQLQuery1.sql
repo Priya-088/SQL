@@ -137,4 +137,57 @@ SELECT * FROM OldProducts2;
 SELECT * INTO BlackProducts from Products
 WHERE color='Black';
 SELECT * FROM BlackProducts;
--
+--Create a table named Retailers with following columns
+--RetailerID-Identity int column with seed value=6 and Increment value=4
+--RetailerCode-varchar data type of length 30
+--RetailerName-varchar data type of length 50
+--Credit-decimal data type with 7 precision and scale of 2
+--CreditLimit-decimal data type with 8 precision and scale of 2
+CREATE TABLE Retailers
+(
+[RetailerID] [int] IDENTITY(6,4),
+[RetailerCode] [varchar](30),
+[RetailerName] [varchar](50),
+[Credit] [decimal](7,2),
+[CreditLimit] [decimal](8,2)
+);
+SELECT * FROM Retailers;
+--Insert data into the above table
+INSERT INTO Retailers (RetailerCode,RetailerName,Credit,CreditLimit)
+VALUES('AUSTRALIA001','Australis Bike Retailer',3245.50,50000.00);
+INSERT INTO Retailers (RetailerCode,RetailerName,Credit,CreditLimit)
+VALUES('TRIKES001','Trikes,Inc.',45300.80,40000.00);
+INSERT INTO Retailers (RetailerCode,RetailerName,Credit,CreditLimit)
+VALUES('CYCLING001','Cycling master',18780.90,20000.00);
+SELECT * FROM Retailers;
+INSERT INTO Retailers (RetailerCode,RetailerName,Credit,CreditLimit)
+VALUES('MERITBI0001','Merit bikes',48538.00,60000.00);
+--Creating a copy of retailers who crossed credit limit as defaulters
+SELECT * INTO Defaulters2 from Retailers
+WHERE CreditLimit<Credit;
+SELECT * FROM Defaulters2;
+
+--ALTER TABLE()- Used to add,drop and modify the column
+--Add a new column 'Price' to Products table
+ALTER TABLE [products]
+add [Price] [decimal](7,2);
+SELECT * FROM Products;
+--Change the data type of the price column to int
+ALTER TABLE Products
+alter column Price int;
+--drop the Price column
+ALTER TABLE Products
+drop column Price;
+--Add a new integer column 'IsActive' to DimReseller table and update the value to 1 for all the retailers
+ALTER TABLE DimReseller
+add [IsActive] [int];
+SELECT * FROM DimReseller;
+UPDATE DimReseller
+SET IsActive=1;
+--Alter the data type of IsActive to varchar and update it to 'TRUE'
+ALTER TABLE DimReseller
+alter column [IsActive] [varchar](20);
+UPDATE DimReseller
+SET IsActive='True';
+--DROP()- To Drop the table
+DROP  TABLE Products_dup;
