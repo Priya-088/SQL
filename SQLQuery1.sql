@@ -190,4 +190,91 @@ alter column [IsActive] [varchar](20);
 UPDATE DimReseller
 SET IsActive='True';
 --DROP()- To Drop the table
-DROP  TABLE Products_dup;
+DROP TABLE Products_dup;
+
+--Commanly used constrains
+--NOT NULL()- Ensure NULL values are not allowed in column, applied only column level
+--Create a table name Employee with following columns
+--EmpID- Identity int column with seed value=1 and increment value=1
+--EmpName- NOT NULL varchar data type of length 100
+--Gender-varchar data type of length 8
+--startdate- date data type
+--Enddate-date data type
+CREATE TABLE Employee
+(
+EmpID int IDENTITY(1,1),
+EmpName varchar(100) NOT NULL,
+Gender varchar(8) NULL,
+StartDate date NULL,
+EndDate date NULL
+);
+SELECT * FROM Employee;
+--In the above table add a NOT NULL constraint to the Gender column in Employee table
+ALTER TABLE Employee
+alter column Gender varchar(8) NOT NULL;
+--Inserting the data into the above table
+INSERT INTO Employee (EmpName,EndDate,StartDate,Gender)
+VALUES('Priya','1996-10-11','2021-06-02','F');
+SELECT * FROM Employee;
+INSERT INTO Employee (EmpName,EndDate,StartDate)
+VALUES('PUPPY','1996-10-11','2021-06-02');
+--Add a column 'HireDate' in the employee table which only accepts valid values
+ALTER TABLE Employee
+add HireDate date;
+UPDATE Employee
+SET HireDate='01-10-2021'
+WHERE EmpName='Priya';
+ALTER TABLE Employee
+alter column HireDate date NOT NULL;
+--UNIQUE CONSTRAINT- Ensures unique value in column, accepts null values, multiple columns can be unique
+--Create a table name 'Employee2' with following info
+--EmpID-int
+--EmpName-Not Null, varchar datatype of length 100
+--Gender-varchar datatype length 8
+--StartDate-date datatype
+--EndDate-date datatype
+--Where EmpID and EmpName uniquely identifies the employee
+CREATE TABLE Employee2
+(
+[EmpID] [int],
+[EmpName] [varchar](100) NOT NULL,
+[Gender] [varchar](8) NULL,
+[StartDate] [date] NULL,
+[EndDate] [date] NULL,
+CONSTRAINT uc_employee UNIQUE (EmpID,EmpName)
+);
+--Insert the same data into the emoloyee2 table and check for the error
+INSERT INTO Employee2 (EmpID,EmpName,Gender,StartDate,EndDate)
+VALUES(1,'Priya','F','02-01-2021','02-01-2035');
+SELECT * FROM Employee2;
+INSERT INTO Employee2 (EmpID,EmpName,Gender,StartDate,EndDate)
+VALUES(1,'MORA','F','02-01-2021','02-01-2035');
+INSERT INTO Employee2 (EmpID,EmpName,Gender,StartDate,EndDate)
+VALUES(1,'Priya','F','02-01-2021','02-01-2035');
+--Drop the Unique constrain from the employee2 table
+ALTER TABLE Employee2
+drop constraint uc_employee;
+--adding a duplicate column in employee2 table and again adding the UNIQUE CONSTRAINT
+INSERT INTO Employee2 (EmpID,EmpName,Gender,StartDate,EndDate)
+VALUES(1,'MORA','F','02-01-2021','02-01-2035');
+SELECT * FROM Employee2;
+--Adding the Unique constraint
+ALTER TABLE Employee2
+add constraint 
+uc_emp UNIQUE (EmpID,EmpName);--here we get an error because of duplicate values
+--Create a table name products with following info
+--ProductName-NOT NULL, Varchar datatype of length 100
+--ProductCode-NOT NULL, Varchar datatype of lengtg 20
+--Color- Varchat datatype of length 20
+--Price- decimal datatype
+--Where ProductName,ProductCode together uniquely identifies a Products
+CREATE TABLE Products
+(
+ProductName varchar(100) NOT NULL,
+productCode varchar(20) NOT NULL,
+Color varchar(20) NULL,
+Price decimal,
+Constraint emp UNIQUE (ProductName,ProductCode)
+);
+SELECT * FROM Products;
+--PRIMARY KEY CONSTRAINT
