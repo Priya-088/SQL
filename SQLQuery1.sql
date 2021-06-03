@@ -278,3 +278,139 @@ Constraint emp UNIQUE (ProductName,ProductCode)
 );
 SELECT * FROM Products;
 --PRIMARY KEY CONSTRAINT
+--Uniquely defines each row, can't accept NULL Values, table has only one Primary key
+--Create a table name 'Employee3' with following info
+--EmpID-int
+--EmpName-Not Null, varchar datatype of length 100
+--Gender-varchar datatype length 8
+--StartDate-date datatype
+--EndDate-date datatype
+--Where EmpID uniquely identifies the employee
+CREATE TABLE Employee3
+(
+EmpID int,
+EmpName varchar(100)  NOT NULL,
+Gender varchar(8) NULL,
+StartDate date NULL,
+EndDate date NULL,
+CONSTRAINT pk_emp PRIMARY KEY (EmpID)
+);
+SELECT * FROM Employee3;
+--INSERTING data in the above table
+INSERT INTO Employee3 (EmpID,EmpName,Gender)
+VALUES(1,'Michel','Male');
+INSERT INTO Employee3 (EmpID,EmpName,Gender)
+VALUES(1,'Michel','Male');
+--Droping the constraint
+ALTER TABLE Employee3
+drop constraint pk_emp;
+--Adding the constraint back- gives an error due to duplicate values
+ALTER TABLE Employee3
+add constraint pk_emp PRIMARY KEY (EmpID);
+--Create a table name products2 with following info
+--ProductName-NOT NULL, Varchar datatype of length 100
+--ProductCode-Varchar datatype of lengtg 20
+--Color- Varchat datatype of length 20
+--Price- decimal datatype
+--Where ProductCode uniquely identifies a Products and can not accept NULL Values
+CREATE TABLE Products2
+(
+ProductName varchar(100) NOT NULL,
+ProductCode varchar(20),
+Color varchar(20) NULL,
+Price decimal NULL,
+CONSTRAINT pk_pro PRIMARY KEY (ProductCode)
+);
+--FOREIGN KEY CONSTRAINT
+--Ensure to the column to accept values only from primary key in another table
+----Create a table name 'Employee3' with following info
+--EmpID-int
+--EmpName-Not Null, varchar datatype of length 100
+--Gender-varchar datatype length 8
+--StartDate-date datatype
+--EndDate-date datatype
+--Where EmpID uniquely identifies the employee
+CREATE TABLE Employee4
+(
+EmpID int,
+EmpName varchar(100)  NOT NULL,
+Gender varchar(8) NULL,
+StartDate date NULL,
+EndDate date NULL,
+CONSTRAINT pk_emp PRIMARY KEY (EmpID)
+);
+SELECT * FROM Employee4;
+--Inserting the records into the table
+INSERT INTO Employee4 (EmpID,EmpName,Gender)
+VALUES(1,'Michel','Male');
+INSERT INTO Employee4 (EmpID,EmpName,Gender)
+VALUES(2,'Joey','Male');
+--Create a salary table
+--EmpID-integer value(Employement ID in the employee table
+--salary-integer value
+CREATE TABLE Salary 
+(
+EmpID int,
+Salary int,
+CONSTRAINT fk_salary FOREIGN KEY (EmpID) REFERENCES Employee4(EmpID)
+);
+--Inserting the data into salary table
+INSERT INTO Salary (EmpID,Salary)
+VALUES(3,2222);
+--Droping the constraint
+ALTER TABLE Salary
+drop constraint fk_salary;
+--CHECK CONSTRAINT
+--Ensure column accepts only valid values based on specified
+--Create a table name products3 with following info
+--ProductID- Identity int column with seed value=1 and increment value=1
+--ProductName-NOT NULL, Varchar datatype of length 100
+--ProductCode-Varchar datatype of lengtg 20
+--Color- Varchar datatype of length 20
+--Price- decimal datatype 
+--Where it allows products with Price greater than 150
+CREATE TABLE Products3
+(
+ProductID int IDENTITY(1,1),
+ProductName varchar(100) NOT NULL,
+ProductCode varchar(20) NULL,
+Color varchar(20) NULL,
+Price decimal(6,2) NULL,
+Constraint check_pro CHECK (Price>150)
+);
+SELECT * FROM Products3;
+--Add the check constraint to products3 table to allow only 'black' coloured products with Price greater than 150
+ALTER TABLE Products3
+add constraint check_color CHECK (Color='black' and Price>150);
+--Insert the data in the above table
+INSERT INTO Products3 (ProductName,ProductCode,Price)
+VALUES('Blade','BL-2036',138.5);
+--Drop the check_pro constraint
+ALTER TABLE Products3
+drop constraint check_pro;
+--DEFAULT CONSTRAINT
+--Specifies a default value for the column when no value is specified
+--Create a table name products3 with following info
+--ProductID- Identity int column with seed value=1 and increment value=1
+--ProductName-NOT NULL, Varchar datatype of length 100
+--ProductCode-Varchar datatype of lengtg 20
+--Color- Varchar datatype of length 20 with a default value 'black'
+--Price- decimal datatype
+CREATE TABLE Products4
+(
+ProductID int identity(1,1),
+ProductName varchar(100) NOT NULL,
+ProductCode varchar(20) NULL,
+Color varchar(20) NULL CONSTRAINT default_pro DEFAULT 'Black',
+Price decimal(6,2) NULL
+);
+--Assign the default price as 100
+ALTER TABLE Products4
+add constraint df_color DEFAULT 100 for Price;
+--Adding the data
+Insert INTO Products4 (ProductName,ProductCode,Price)
+VALUES('blade','BL-2036',138.5);
+SELECT * FROM Products4;
+--Drop the constraint
+ALTER TABLE Products4
+drop constraint df_color;
