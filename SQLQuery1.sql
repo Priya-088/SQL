@@ -414,3 +414,106 @@ SELECT * FROM Products4;
 --Drop the constraint
 ALTER TABLE Products4
 drop constraint df_color;
+
+--JOINS- Used to join multiple tables based on common column
+--INNER JOIN- Returns the matching rows from both tables
+--Find the sales value and quantity against different population density zones using sales table and city table
+SELECT * FROM City;
+SELECT * FROM Sales;
+SELECT C.PopulationDensity, SUM(S.SalesQuantity) SUM_OF_QUANTITY,SUM(S.SalesValue) SUM_SALES
+FROM Sales S
+INNER JOIN
+City C
+ON
+C.CityID=S.CityID
+GROUP BY C.PopulationDensity;
+
+--LEFT JOIN- Gives the common rows from right table and all the rows from left table
+--List all the cities with sales value and sales quantity at city level.  If there are no sales made in a particular city the show the measure as 0
+SELECT C.CityName,ISNULL(SUM(SalesQuantity),0),ISNULL(SUM(SalesValue),0)
+FROM City C
+LEFT JOIN
+Sales S
+ON
+S.CityID=C.CityID
+GROUP BY C.CityName;
+--LEFT EXCLUDING JOIN- Return all the records from left table without matching records from right table
+--List the cities with no sales
+SELECT C.* ,S.SalesQuantity FROM
+City C LEFT JOIN Sales S
+ON 
+C.CityID=S.CityID
+WHERE S.SalesQuantity IS NULL;
+--RIGHT JOIN- Returns matching rows from left table and all the rows from right table
+--List all the cities with sales value and sales quantity at city level.  If there are no sales made in a particular city the show the measure as 0
+SELECT C.CityName,ISNULL(SUM(SalesQuantity),0),ISNULL(SUM(SalesValue),0)
+FROM Sales S
+LEFT JOIN
+City C
+ON
+S.CityID=C.CityID
+GROUP BY C.CityName;
+--RIGHT EXCLUDING JOIN- Return all the records from right table without matching records from right table
+--List the sales for invalid product that is products not available in products table
+SELECT S.*,P.ProductID FROM Products P RIGHT JOIN Sales S
+ON P.ProductID=S.ProductID
+WHERE P.ProductID IS NULL;
+
+SELECT * FROM DimSalesTerritory;
+SELECT * FROM FactInternetSales;
+
+--FULL JOIN- Full join is used to return all the rows from both the tables
+--Select all the sales orders and all products from sales table and products table respectively
+SELECT * FROM Sales S
+FULL JOIN Products P
+ON S.ProductID=P.ProductID
+--SELF JOIN- Self join is used to join table with it self by using the two copies of the same table
+--Select distinct list of all different sales orderID for ProductID=776
+SELECT * FROM Sales.SalesOrderDetail;
+SELECT DISTINCT(S.SalesOrderID), P.SalesOrderDetailID FROM
+Sales.SalesOrderDetail S LEFT JOIN Sales.SalesOrderDetail P
+ON S.SalesOrderID=P.SalesOrderDetailID
+WHERE S.ProductID=776;
+
+--VIEW
+--Create view- Used to creat the view
+--Create a view to allow the users to access only Canada's Internet Sales for the year 2008
+CREATE VIEW
+CanadaInternetSales2008
+AS
+SELECT INTSALES.* FROM FactInternetSales INTSALES
+INNER JOIN
+DimSalesTerritory ST
+ON
+INTSALES.SalesTerritoryKey=ST.SalesTerritoryKey
+INNER JOIN
+DimDate DT
+ON
+INTSALES.OrderDateKey=DT.DateKey
+WHERE ST.SalesTerritoryRegion='Canada'
+AND DT.CalendarYear=2008;
+
+SELECT * FROM CanadaInternetSales2008;
+
+--UPDATE THE VIEW
+--Update CanadaInternetSales2008 view to select only products with UnitPrice greater than 50
+ALTER VIEW 
+CanadaInternetSales2008
+AS
+SELECT INTSALES.* FROM FactInternetSales INTSALES
+INNER JOIN
+DimSalesTerritory ST
+ON
+INTSALES.SalesTerritoryKey=ST.SalesTerritoryKey
+INNER JOIN
+DimDate DT
+ON
+INTSALES.OrderDateKey=DT.DateKey
+WHERE ST.SalesTerritoryRegion='Canada'
+AND DT.CalendarYear=2008
+AND UnitPrice>50;
+
+SELECT * FROM CanadaInternetSales2008;
+
+--DROP VIEW
+DROP VIEW CanadaInternetSales2008;
