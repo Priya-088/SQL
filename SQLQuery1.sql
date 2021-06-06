@@ -517,3 +517,17 @@ SELECT * FROM CanadaInternetSales2008;
 
 --DROP VIEW
 DROP VIEW CanadaInternetSales2008;
+--STORED PROCEDURE- Is a prepared SQL code that can be used again and again
+--CREATE a procedure to fetch the sales for specified MonthID and SalesQuantity
+CREATE PROCEDURE fetch_sales @month int,@quantity int
+AS
+SELECT * FROM Sales
+WHERE MonthID=@month AND SalesQuantity>@quantity;
+
+EXEC fetch_sales @month=201601, @quantity=20;
+
+--CREATE DATABASE
+CREATE DATABASE TestDB;
+--DROP DATABASE TestDB
+DROP DATABASE TestDB;
+
