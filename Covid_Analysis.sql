@@ -137,5 +137,49 @@ dea.date=vac.date
 WHERE dea.continent is not null
 --ORDER BY 2,3
 )
+SELECT *,(RollingPeopleVaccination/Population)*100
+FROM PopVac
+--SELECT * FROM PopVac
 
-SELECT * FROM PopVac
+--The above process can be done using a TEMP TABLE(new table)
+--Creating a table
+
+DROP TABLE IF EXISTS PercentPopulationVaccinated
+CREATE TABLE PercentPopulationVaccinated
+(
+Continent varchar(255),
+Location varchar(225),
+Date datetime,
+Population numeric,
+New_vaccination numeric,
+RollingPeopleVaccination numeric
+)
+--Inserting data into the above table
+INSERT INTO PercentPopulationVaccinated
+SELECT dea.continent,dea.location,dea.date,dea.population,vac.new_vaccinations, 
+SUM(CONVERT(numeric,vac.new_vaccinations)) OVER(PARTITION BY dea.location ORDER BY dea.location, dea.date) as RollingPeopleVaccination
+FROM CovidAnalysis..CovidDeaths$ dea
+join CovidAnalysis..CovidVaccinations$ vac
+on dea.location=vac.location and
+dea.date=vac.date
+--WHERE dea.continent is not null
+--ORDER BY 2,3
+
+SELECT * FROM PercentPopulationVaccinated
+
+SELECT *,(RollingPeopleVaccination/Population)*100
+FROM PercentPopulationVaccinated
+
+--Creating a view for later visualisation
+CREATE VIEW PopulationVaccinated
+as
+SELECT dea.continent,dea.location,dea.date,dea.population,vac.new_vaccinations, 
+SUM(CONVERT(numeric,vac.new_vaccinations)) OVER(PARTITION BY dea.location ORDER BY dea.location, dea.date) as RollingPeopleVaccination
+FROM CovidAnalysis..CovidDeaths$ dea
+join CovidAnalysis..CovidVaccinations$ vac
+on dea.location=vac.location and
+dea.date=vac.date
+WHERE dea.continent is not null
+--ORDER BY 2,3
+
+SELECT * FROM PopulationVaccinated;
